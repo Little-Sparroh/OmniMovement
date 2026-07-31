@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "Sparroh"
 name = "OmniMovement"
-description = "Makes ground movement speed consistent in all directions (strafe, backward, diagonals, slide)."
+description = "Makes ground movement speed consistent in all directions (forward, strafe, backward, diagonals, and slide strafe)."
 websiteUrl = "https://github.com/Little-Sparroh/OmniMovement"
 containsNsfwContent = false
 
@@ -17,7 +17,7 @@ readme = "README.md"
 outdir = "build"
 
 [[build.copy]]
-source = "bin/Release/net48/OmniMovement.dll"
+source = "bin/Release/netstandard2.1/OmniMovement.dll"
 target = "BepInEx/plugins/OmniMovement.dll"
 
 [[build.copy]]
@@ -30,7 +30,7 @@ target = "LICENSE"
 
 [publish]
 repository = "https://thunderstore.io"
-communities = [ "mycopunk" ]
+communities = ["mycopunk"]
 
 [publish.categories]
-mycopunk = [ "client" ]
+mycopunk = ["client"]

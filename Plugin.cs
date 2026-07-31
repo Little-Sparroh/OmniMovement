@@ -1,18 +1,17 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
+﻿using System;
+using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 
 [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
-[MycoMod(null, ModFlags.IsClientSide)]
-public class SparrohPlugin : BaseUnityPlugin
+[MycoMod(null, ModFlags.IsSandbox)]
+public class OmniMovementPlugin : BaseUnityPlugin
 {
     public const string PluginGUID = "sparroh.omnimovement";
     public const string PluginName = "OmniMovement";
-    public const string PluginVersion = "2.0.0";
+    public const string PluginVersion = "2.0.1";
 
-    internal static new ManualLogSource Logger;
-    internal static ConfigEntry<bool> enableOmniMovement;
+    internal new static ManualLogSource Logger;
 
     private Harmony harmony;
 
@@ -20,20 +19,31 @@ public class SparrohPlugin : BaseUnityPlugin
     {
         Logger = base.Logger;
 
-        enableOmniMovement = Config.Bind(
-            "General",
-            "Enable Omni Movement",
-            true,
-            "Makes ground movement speed consistent in all directions (forward, strafe, backward, diagonals, and slide strafe).");
+        ConfigManager.Initialize(Config, Logger);
 
         harmony = new Harmony(PluginGUID);
-        harmony.PatchAll(typeof(GroundOmniMovementPatch));
+
+        try
+        {
+            harmony.PatchAll(typeof(GroundOmniMovementPatch));
+            Logger.LogInfo("Harmony patches applied.");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Error applying patches: {ex.Message}");
+        }
 
         Logger.LogInfo($"{PluginName} v{PluginVersion} loaded successfully.");
     }
 
+    private void Update()
+    {
+        ConfigManager.Tick();
+    }
+
     private void OnDestroy()
     {
+        ConfigManager.Dispose();
         harmony?.UnpatchSelf();
     }
 }
